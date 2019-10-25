@@ -2,11 +2,12 @@ package bitso
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"github.com/google/go-querystring/query"
 	"github.com/grupokindynos/gobitso/models"
 	"io/ioutil"
 	"net/http"
-	"github.com/google/go-querystring/query"
 )
 
 type Bitso struct {
@@ -27,16 +28,21 @@ func GetBalance() (bool, error) {
 	panic("not implemented yet")
 }
 
-func (b *Bitso) GetTrades(market string, limit int) (bool, error) {
+func (b *Bitso) GetTrades(market string) (models.TradeResponse, error) {
+	var tradeResp models.TradeResponse
 	params := models.TradesParams{
-		Book:market,
+		Book: market,
 	}
 	data, err := PublicRequest(b.Url + "/trades", http.MethodGet, nil, params)
 	if err != nil {
-		return false, err
+		return tradeResp, err
 	}
-	fmt.Println(string(data))
-	return true, nil
+	err = json.Unmarshal(data, &tradeResp)
+	if err != nil {
+		return tradeResp, err
+	}
+	fmt.Println("Response: ", tradeResp)
+	return tradeResp, nil
 }
 
 func SignRequest() (string, error){
@@ -90,6 +96,8 @@ func PublicRequest(url string, method string, params []byte, queryParams interfa
 		}
 		return data, nil
 	}
+}
 
-
+func PrivateRequest(){
+	panic("not implemented yet")
 }

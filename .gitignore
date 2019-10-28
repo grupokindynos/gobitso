@@ -16,4 +16,6 @@ main.go
 
 # idea
 .idea/*
-bitso_test.go
+
+# Config File
+.env

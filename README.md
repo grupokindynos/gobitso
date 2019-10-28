@@ -1,6 +1,6 @@
 # Gobitso API
 
-This is a golang wrapper implementation for the Bitso REST API, developed by Kindynos
+This is a golang wrapper implementation for the Bitso REST API, developed by Kindynos.
 
 ## Usage
 
@@ -15,7 +15,7 @@ trades, _ := b.Trades("btc_mxn")
 fmt.Println(trades)
 ```
 
-To add private functionality use the SetAuth
+To add private functionality use the SetAuth method with the API Keys provided by Bitso.
 ```go
 import(
     "github.com/grupokindynos/gobitso"
@@ -27,5 +27,5 @@ fmt.Println(balances)
 ```
 
 
-## Colaborators
+## Collaborators
 * Luis Correa (Kindynos)

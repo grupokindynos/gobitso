@@ -19,7 +19,7 @@ func init(){
 func TestBalances(t *testing.T) {
 	b := NewBitso("https://api.bitso.com")
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
-	res, err := b.GetBalances()
+	res, err := b.Balances()
 	assert.Nil(t, err)
 	assert.IsType(t, res, models.BalancesResponse{})
 }
@@ -27,7 +27,7 @@ func TestBalances(t *testing.T) {
 // Tests Public API
 func TestTrades(t *testing.T) {
 	b := NewBitso("https://api.bitso.com")
-	res, err := b.GetTrades("btc_mxn")
+	res, err := b.Trades("btc_mxn")
 	assert.Nil(t, err)
 	assert.Equal(t, 25, len(res.Payload))
 	assert.IsType(t, res, models.TradeResponse{})

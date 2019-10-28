@@ -20,7 +20,7 @@ type BitsoPrivate struct {
 	UrlPrivate		string
 }
 
-func (b *BitsoPrivate) GetBalances() (models.BalancesResponse, error) {
+func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	var balancesResp models.BalancesResponse
 	data, err := b.PrivateRequest("/v3/balance", http.MethodGet, nil, nil)
 	if err != nil {
@@ -31,6 +31,10 @@ func (b *BitsoPrivate) GetBalances() (models.BalancesResponse, error) {
 		return balancesResp, err
 	}
 	return balancesResp, nil
+}
+
+func(b *BitsoPrivate)Withdraw(){
+
 }
 
 func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {

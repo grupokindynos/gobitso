@@ -14,7 +14,7 @@ type BitsoPublic struct {
 }
 
 // Methods
-func (b *BitsoPublic) GetTrades(market string) (models.TradeResponse, error) {
+func (b *BitsoPublic) Trades(market string) (models.TradeResponse, error) {
 	var tradeResp models.TradeResponse
 	params := models.TradesParams{
 		Book: market,

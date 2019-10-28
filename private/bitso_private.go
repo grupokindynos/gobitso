@@ -1,6 +1,7 @@
 package bitso_private
 
 import (
+	"bytes"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
@@ -33,8 +34,11 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
-func(b *BitsoPrivate)Withdraw(){
+func(b *BitsoPrivate)Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
+	var withdrawInfo models.WithdrawResponse
+	data, err := b.PrivateRequest()
 
+	return withdrawInfo, nil
 }
 
 func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
@@ -68,6 +72,25 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		// Perform Request
 		res, err := client.Do(req)
 
+		if res != nil {
+			defer res.Body.Close()
+		}
+		if err != nil {
+			return arr, err
+		}
+		data, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return arr, err
+		}
+		return data, nil
+	} else {
+		req, err := http.NewRequest(method, b.UrlPrivate + url, bytes.NewBuffer(params))
+		if err != nil {
+			return arr, err
+		}
+
+		req.Header.Add("Authorization", authH)
+		res, err := client.Do(req)
 		if res != nil {
 			defer res.Body.Close()
 		}

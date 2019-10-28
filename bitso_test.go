@@ -1,6 +1,7 @@
 package bitso
 
 import (
+	"fmt"
 	"github.com/grupokindynos/gobitso/models"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -14,6 +15,21 @@ func init(){
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
+}
+
+// Test Withdrawal
+func TestWithdrawals(t *testing.T) {
+	b := NewBitso("https://api.bitso.com")
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	params := models.WithdrawParams{
+		Currency: "",
+		Amount:   0,
+		Address:  "",
+		Tag:      "",
+	}
+	res, err := b.Withdraw(params)
+	assert.Nil(t, err)
+	fmt.Println(res)
 }
 // Tests Private Api
 func TestBalances(t *testing.T) {

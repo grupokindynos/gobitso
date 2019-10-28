@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type TradeResponse struct {
 	Success bool `json:"success"`
 	Payload []OrderResponse `json:"payload"`
@@ -26,4 +28,20 @@ type BalanceResponse struct {
 	Total     string `json:"total"`
 	Locked    string `json:"locked"`
 	Available string `json:"available"`
+}
+
+type WithdrawResponse struct {
+	Success bool `json:"success"`
+	Payload struct {
+		Wid       string    `json:"wid"`
+		Status    string    `json:"status"`
+		CreatedAt time.Time `json:"created_at"`
+		Currency  string    `json:"currency"`
+		Method    string    `json:"method"`
+		Amount    string    `json:"amount"`
+		Details   struct {
+			WithdrawalAddress string      `json:"withdrawal_address"`
+			TxHash            interface{} `json:"tx_hash"`
+		} `json:"details"`
+	} `json:"payload"`
 }

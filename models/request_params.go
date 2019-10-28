@@ -6,3 +6,10 @@ type TradesParams struct{
 	Sort	string		`url:"sort"` // 'asc' or 'desc'
 	Limit	int			`url:"limit"` // max 100
 }
+
+type WithdrawParams struct{
+	Currency	string	`url:"currency"`
+	Amount		float64	`url:"amount"`
+	Address		string	`url:"address"`
+	Tag			string	`url:"destination_tag"`
+}

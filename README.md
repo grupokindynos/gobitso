@@ -4,12 +4,12 @@ This is a golang wrapper implementation for the Bitso REST API, developed by Kin
 
 ## Usage
 
-In order to use Bitso's Public API just instantiate the service.
+In order to use Bitso's Public API just import the repo and instantiate the service.
+```go
+import "github.com/grupokindynos/gobitso"
+```
 
 ```go
-import(
-    "github.com/grupokindynos/gobitso"
-)
 b := NewBitso("https://api.bitso.com")
 trades, _ := b.Trades("btc_mxn")
 fmt.Println(trades)
@@ -17,9 +17,6 @@ fmt.Println(trades)
 
 To add private functionality use the SetAuth method with the API Keys provided by Bitso.
 ```go
-import(
-    "github.com/grupokindynos/gobitso"
-)
 b := NewBitso("https://api.bitso.com")
 b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 balances, err := b.Balances()

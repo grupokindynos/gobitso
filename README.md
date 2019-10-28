@@ -19,7 +19,7 @@ To add private functionality use the SetAuth method with the API Keys provided b
 ```go
 b := NewBitso("https://api.bitso.com")
 b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
-balances, err := b.Balances()
+balances, _ := b.Balances()
 fmt.Println(balances)
 ```
 

@@ -1,5 +1,6 @@
 package models
 
+// Query Params
 type TradesParams struct{
 	Book 	string 		`url:"book"`
 	Marker	string		`url:"marker"`
@@ -8,8 +9,8 @@ type TradesParams struct{
 }
 
 type WithdrawParams struct{
-	Currency	string	`url:"currency"`
-	Amount		float64	`url:"amount"`
-	Address		string	`url:"address"`
-	Tag			string	`url:"destination_tag"`
+	Currency	string	`json:"currency"`
+	Amount		string	`json:"amount"`
+	Address		string	`json:"address"`
+	//Tag			string	`json:"destination_tag"`
 }

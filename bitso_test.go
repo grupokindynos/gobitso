@@ -22,14 +22,13 @@ func TestWithdrawals(t *testing.T) {
 	b := NewBitso("https://api.bitso.com")
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 	params := models.WithdrawParams{
-		Currency: "",
-		Amount:   0,
-		Address:  "",
-		Tag:      "",
+		Currency: "litecoin",
+		Amount:   "20",
+		Address:  "MQvNy1m7UZVfmeyAQEeYLYr9uJDwkAh898",
 	}
-	res, err := b.Withdraw(params)
+	res, err := b.Withdraw("litecoin", params)
 	assert.Nil(t, err)
-	fmt.Println(res)
+	fmt.Println("Test Response: ", res)
 }
 // Tests Private Api
 func TestBalances(t *testing.T) {
@@ -38,6 +37,7 @@ func TestBalances(t *testing.T) {
 	res, err := b.Balances()
 	assert.Nil(t, err)
 	assert.IsType(t, res, models.BalancesResponse{})
+	fmt.Println("TestBalances: ", res.Payload.Balances)
 }
 
 // Tests Public API

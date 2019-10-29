@@ -34,9 +34,15 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
-func(b *BitsoPrivate)Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
+func(b *BitsoPrivate) Withdraw(coin string, params models.WithdrawParams) (models.WithdrawResponse, error) {
 	var withdrawInfo models.WithdrawResponse
-	data, err := b.PrivateRequest()
+	byteParams, err := json.Marshal(params)
+	if err != nil {
+		return withdrawInfo, err
+	}
+	data, err := b.PrivateRequest("/v3/" + coin + "_withdrawal", http.MethodPost, byteParams, nil)
+
+	fmt.Println("Withdraw Data: ", data)
 
 	return withdrawInfo, nil
 }
@@ -46,15 +52,12 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 	client := &http.Client{}
 
 	// Signing Data
-	var key = b.ApiKey
-	var nonce = strconv.FormatInt(time.Now().Unix(), 10)
-	var authHeather =  nonce + method + url + string(params)
-	var signedPayload = hmac.New(sha256.New, []byte(b.ApiSecret))
-	signedPayload.Write([]byte(authHeather))
-	var signature = hex.EncodeToString(signedPayload.Sum(nil))
-	var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
-
+	key2, nonce2, signature2 := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
+	var authH2 = fmt.Sprintf("Bitso %s:%s:%s", key2, nonce2, signature2)
+	fmt.Println(authH2)
 	if method == http.MethodGet {
+		key, nonce, signature := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
+		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
 		req, err := http.NewRequest(method, b.UrlPrivate + url, nil)
 		if err != nil {
 			return arr, err
@@ -85,10 +88,14 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		return data, nil
 	} else {
 		req, err := http.NewRequest(method, b.UrlPrivate + url, bytes.NewBuffer(params))
+		fmt.Println("Used for Params: ", string(params))
 		if err != nil {
 			return arr, err
 		}
+		fmt.Println(b.UrlPrivate + url)
 
+		key, nonce, signature := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
+		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
 		req.Header.Add("Authorization", authH)
 		res, err := client.Do(req)
 		if res != nil {
@@ -101,7 +108,18 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		if err != nil {
 			return arr, err
 		}
+		fmt.Println("Raw data: ", data)
 		return data, nil
 	}
-	return []byte(nil), nil
+}
+
+func getSigningDaa(key string, apiSecret string, method string, url string, params []byte) (string, string, string){
+	fmt.Println("Used for signing: ", string(params))
+	fmt.Println(url)
+	var nonce = strconv.FormatInt(time.Now().Unix(), 10)
+	var authHeather =  nonce + method + url + string(params)
+	var signedPayload = hmac.New(sha256.New, []byte(apiSecret))
+	signedPayload.Write([]byte(authHeather))
+	var signature = hex.EncodeToString(signedPayload.Sum(nil))
+	return key, nonce, signature
 }

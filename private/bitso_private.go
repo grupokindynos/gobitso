@@ -51,12 +51,8 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 	var arr []byte
 	client := &http.Client{}
 
-	// Signing Data
-	key2, nonce2, signature2 := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
-	var authH2 = fmt.Sprintf("Bitso %s:%s:%s", key2, nonce2, signature2)
-	fmt.Println(authH2)
 	if method == http.MethodGet {
-		key, nonce, signature := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
+		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, params)
 		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
 		req, err := http.NewRequest(method, b.UrlPrivate + url, nil)
 		if err != nil {
@@ -94,9 +90,10 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		}
 		fmt.Println(b.UrlPrivate + url)
 
-		key, nonce, signature := getSigningDaa(b.ApiKey, b.ApiSecret, method, url, params)
+		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, params)
 		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
 		req.Header.Add("Authorization", authH)
+		req.Header.Set("Content-Type", "application/json")
 		res, err := client.Do(req)
 		if res != nil {
 			defer res.Body.Close()
@@ -108,12 +105,12 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		if err != nil {
 			return arr, err
 		}
-		fmt.Println("Raw data: ", data)
+		fmt.Println("Raw data: ", string(data))
 		return data, nil
 	}
 }
 
-func getSigningDaa(key string, apiSecret string, method string, url string, params []byte) (string, string, string){
+func getSigningData(key string, apiSecret string, method string, url string, params []byte) (string, string, string){
 	fmt.Println("Used for signing: ", string(params))
 	fmt.Println(url)
 	var nonce = strconv.FormatInt(time.Now().Unix(), 10)

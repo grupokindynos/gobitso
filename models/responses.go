@@ -7,6 +7,23 @@ type TradeResponse struct {
 	Payload []OrderResponse `json:"payload"`
 }
 
+type TickerResponse struct {
+	Success bool `json:"success"`
+	Payload BookInfoResponse `json:"payload"`
+}
+
+type BookInfoResponse struct {
+	Book      string    `json:"book"`
+	Volume    string    `json:"volume"`
+	High      string    `json:"high"`
+	Last      string    `json:"last"`
+	Low       string    `json:"low"`
+	Vwap      string    `json:"vwap"`
+	Ask       string    `json:"ask"`
+	Bid       string    `json:"bid"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
 type OrderResponse struct {
 	Book      string    `json:"book"`
 	CreatedAt string	`json:"created_at"`

@@ -14,11 +14,8 @@ type BitsoPublic struct {
 }
 
 // Methods
-func (b *BitsoPublic) Trades(market string) (models.TradeResponse, error) {
+func (b *BitsoPublic) Trades(params models.TradesParams) (models.TradeResponse, error) {
 	var tradeResp models.TradeResponse
-	params := models.TradesParams{
-		Book: market,
-	}
 	data, err := b.PublicRequest("/v3/trades", http.MethodGet, nil, params)
 	if err != nil {
 		return tradeResp, err
@@ -40,7 +37,15 @@ func (b *BitsoPublic) AvailableBooks() (models.BooksResponse, error){
 	return availableBooksResp, nil
 }
 
-
+func (b *BitsoPublic) Ticker(params models.TickerParams) (models.TickerResponse, error) {
+	var tickerResp models.TickerResponse
+	data, err := b.PublicRequest("/v3/ticker", http.MethodGet, nil, params)
+	if err != nil {
+		return tickerResp, err
+	}
+	err = json.Unmarshal(data, &tickerResp)
+	return tickerResp, nil
+}
 
 func (b *BitsoPublic)PublicRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
 	var arr []byte

@@ -58,7 +58,9 @@ func TestBalances(t *testing.T) {
 // Tests Public API
 func TestTrades(t *testing.T) {
 	b := NewBitso(BitsoUrl)
-	res, err := b.Trades("btc_mxn")
+	res, err := b.Trades(models.TradesParams{
+		Book:   "btc_mxn",
+	})
 	assert.Nil(t, err)
 	assert.Equal(t, 25, len(res.Payload))
 	assert.IsType(t, res, models.TradeResponse{})
@@ -74,6 +76,14 @@ func TestOrderPlacement(t *testing.T) {
 		InternalID: "testing-order",
 	})
 	assert.Nil(t,  err)
+}
+
+func TestTicker(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	_, err := b.Ticker(models.TickerParams{
+		Book:"btc_mxn",
+	})
+	assert.Nil(t, err)
 }
 
 

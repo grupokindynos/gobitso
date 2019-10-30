@@ -8,6 +8,10 @@ type TradesParams struct{
 	Limit	int			`url:"limit"` // max 100
 }
 
+type TickerParams struct{
+	Book 	string 		`url:"book"`
+}
+
 type WithdrawParams struct{
 	Currency	string	`json:"currency"`
 	Amount		string	`json:"amount"`
@@ -32,6 +36,7 @@ const(
 type PlaceOrderParams struct {
 	Book 		string 		`json:"book"`
 	Side		OrderSide	`json:"side"`
+	Type		string		`json:"type"`
 	TimeIF 		TimeInForce	`json:"time_in_force"`
 	InternalID	string		`json:"client_id"`
 }

@@ -30,6 +30,18 @@ func (b *BitsoPublic) Trades(market string) (models.TradeResponse, error) {
 	return tradeResp, nil
 }
 
+func (b *BitsoPublic) AvailableBooks() (models.BooksResponse, error){
+	var availableBooksResp models.BooksResponse
+	data, err := b.PublicRequest("/v3/available_books", http.MethodGet, nil, nil)
+	if err != nil {
+		return availableBooksResp, err
+	}
+	err = json.Unmarshal(data, &availableBooksResp)
+	return availableBooksResp, nil
+}
+
+
+
 func (b *BitsoPublic)PublicRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
 	var arr []byte
 	client := &http.Client{}

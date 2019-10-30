@@ -1,6 +1,6 @@
 # Gobitso API
 
-This is a golang wrapper implementation for the Bitso REST API, developed by Kindynos.
+This is a golang wrapper implementation for the Bitso's v3 REST API, developed by Kindynos.
 
 ## Usage
 

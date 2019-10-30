@@ -64,4 +64,16 @@ func TestTrades(t *testing.T) {
 	assert.IsType(t, res, models.TradeResponse{})
 }
 
+func TestOrderPlacement(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	_, err := b.PlaceOrder(models.PlaceOrderParams{
+		Book:       "btc_mxn",
+		Side:       "buy",
+		TimeIF:     models.GTC,
+		InternalID: "testing-order",
+	})
+	assert.Nil(t,  err)
+}
+
 

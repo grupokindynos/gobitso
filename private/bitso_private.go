@@ -34,13 +34,13 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
-func(b *BitsoPrivate) Withdraw(coin string, params models.WithdrawParams) (models.WithdrawResponse, error) {
+func(b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
 	var withdrawInfo models.WithdrawResponse
 	byteParams, err := json.Marshal(params)
 	if err != nil {
 		return withdrawInfo, err
 	}
-	data, err := b.PrivateRequest("/v3/" + coin + "_withdrawal", http.MethodPost, byteParams, nil)
+	data, err := b.PrivateRequest("/v3/" + params.Currency + "_withdrawal", http.MethodPost, byteParams, nil)
 
 	err = json.Unmarshal(data, &withdrawInfo)
 	if err != nil {
@@ -50,6 +50,11 @@ func(b *BitsoPrivate) Withdraw(coin string, params models.WithdrawParams) (model
 }
 
 func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
+	err := b.validateCredentials()
+	if  err != nil {
+		return []byte{}, err
+	}
+
 	var arr []byte
 	client := &http.Client{}
 
@@ -116,4 +121,11 @@ func getSigningData(key string, apiSecret string, method string, url string, par
 	signedPayload.Write([]byte(authHeather))
 	var signature = hex.EncodeToString(signedPayload.Sum(nil))
 	return key, nonce, signature
+}
+
+func (b *BitsoPrivate)validateCredentials() (error){
+	if b.ApiKey == "" || b.ApiSecret == "" {
+		return &models.NoCredentials{}
+	}
+	return nil
 }

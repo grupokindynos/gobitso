@@ -12,5 +12,5 @@ type WithdrawParams struct{
 	Currency	string	`json:"currency"`
 	Amount		string	`json:"amount"`
 	Address		string	`json:"address"`
-	//Tag			string	`json:"destination_tag"`
+	Tag			string	`json:"destination_tag"`
 }

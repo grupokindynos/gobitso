@@ -42,8 +42,10 @@ func(b *BitsoPrivate) Withdraw(coin string, params models.WithdrawParams) (model
 	}
 	data, err := b.PrivateRequest("/v3/" + coin + "_withdrawal", http.MethodPost, byteParams, nil)
 
-	fmt.Println("Withdraw Data: ", data)
-
+	err = json.Unmarshal(data, &withdrawInfo)
+	if err != nil {
+		return models.WithdrawResponse{}, err
+	}
 	return withdrawInfo, nil
 }
 
@@ -84,11 +86,9 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		return data, nil
 	} else {
 		req, err := http.NewRequest(method, b.UrlPrivate + url, bytes.NewBuffer(params))
-		fmt.Println("Used for Params: ", string(params))
 		if err != nil {
 			return arr, err
 		}
-		fmt.Println(b.UrlPrivate + url)
 
 		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, params)
 		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
@@ -105,14 +105,11 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		if err != nil {
 			return arr, err
 		}
-		fmt.Println("Raw data: ", string(data))
 		return data, nil
 	}
 }
 
 func getSigningData(key string, apiSecret string, method string, url string, params []byte) (string, string, string){
-	fmt.Println("Used for signing: ", string(params))
-	fmt.Println(url)
 	var nonce = strconv.FormatInt(time.Now().Unix(), 10)
 	var authHeather =  nonce + method + url + string(params)
 	var signedPayload = hmac.New(sha256.New, []byte(apiSecret))

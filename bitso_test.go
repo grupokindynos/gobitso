@@ -23,7 +23,7 @@ func TestWithdrawals(t *testing.T) {
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 	params := models.WithdrawParams{
 		Currency: "litecoin",
-		Amount:   "20",
+		Amount:   "0.002",
 		Address:  "MQvNy1m7UZVfmeyAQEeYLYr9uJDwkAh898",
 	}
 	res, err := b.Withdraw("litecoin", params)

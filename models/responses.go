@@ -84,3 +84,10 @@ type Account struct {
 	SignedContract        string `json:"signed_contract"`
 	OriginOfFunds         string `json:"origin_of_funds"`
 }
+
+type PlacedOrderResponse struct {
+	Success bool `json:"success"`
+	Payload struct {
+		Oid string `json:"oid"`
+	} `json:"payload"`
+}

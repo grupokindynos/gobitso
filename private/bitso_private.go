@@ -34,6 +34,23 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
+func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.PlacedOrderResponse, error){
+	var placedOrderResp models.PlacedOrderResponse
+	byteParams, err := json.Marshal(params)
+	if err != nil {
+		return placedOrderResp, err
+	}
+	data, err := b.PrivateRequest("/v3/orders", http.MethodPost, byteParams, nil)
+	if err != nil {
+		return placedOrderResp, err
+	}
+	err = json.Unmarshal(data, &placedOrderResp)
+	if err != nil {
+		return placedOrderResp, err
+	}
+	return placedOrderResp, nil
+}
+
 func(b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
 	var withdrawInfo models.WithdrawResponse
 	byteParams, err := json.Marshal(params)

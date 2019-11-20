@@ -16,9 +16,9 @@ import (
 )
 
 type BitsoPrivate struct {
-	ApiKey			string
-	ApiSecret 		string
-	UrlPrivate		string
+	ApiKey     string
+	ApiSecret  string
+	UrlPrivate string
 }
 
 func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
@@ -34,7 +34,21 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
-func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.PlacedOrderResponse, error){
+func (b *BitsoPrivate) GetAddress(params models.DestinationParams) (models.DestinationResponse, error) {
+	var destinationResp models.DestinationResponse
+	data, err := b.PrivateRequest("/v3/funding_destination", http.MethodGet, nil, destinationResp)
+	if err != nil {
+		return destinationResp, err
+	}
+	fmt.Println("DATA: ", string(data))
+	err = json.Unmarshal(data, &destinationResp)
+	if err != nil {
+		return destinationResp, err
+	}
+	return destinationResp, nil
+}
+
+func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.PlacedOrderResponse, error) {
 	var placedOrderResp models.PlacedOrderResponse
 	byteParams, err := json.Marshal(params)
 	if err != nil {
@@ -51,13 +65,13 @@ func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.Placed
 	return placedOrderResp, nil
 }
 
-func(b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
+func (b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
 	var withdrawInfo models.WithdrawResponse
 	byteParams, err := json.Marshal(params)
 	if err != nil {
 		return withdrawInfo, err
 	}
-	data, err := b.PrivateRequest("/v3/" + params.Currency + "_withdrawal", http.MethodPost, byteParams, nil)
+	data, err := b.PrivateRequest("/v3/"+params.Currency+"_withdrawal", http.MethodPost, byteParams, nil)
 
 	err = json.Unmarshal(data, &withdrawInfo)
 	if err != nil {
@@ -68,7 +82,7 @@ func(b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawRes
 
 func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
 	err := b.validateCredentials()
-	if  err != nil {
+	if err != nil {
 		return []byte{}, err
 	}
 
@@ -76,13 +90,14 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 	client := &http.Client{}
 
 	if method == http.MethodGet {
-		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, params)
-		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
-		req, err := http.NewRequest(method, b.UrlPrivate + url, nil)
+		val, err := query.Values(queryParams)
 		if err != nil {
 			return arr, err
 		}
-		val, err := query.Values(queryParams)
+		var iQueryParams, _ = json.Marshal(queryParams)
+		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, iQueryParams)
+		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
+		req, err := http.NewRequest(method, b.UrlPrivate+url, nil)
 		if err != nil {
 			return arr, err
 		}
@@ -107,7 +122,7 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		}
 		return data, nil
 	} else {
-		req, err := http.NewRequest(method, b.UrlPrivate + url, bytes.NewBuffer(params))
+		req, err := http.NewRequest(method, b.UrlPrivate+url, bytes.NewBuffer(params))
 		if err != nil {
 			return arr, err
 		}
@@ -131,16 +146,16 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 	}
 }
 
-func getSigningData(key string, apiSecret string, method string, url string, params []byte) (string, string, string){
+func getSigningData(key string, apiSecret string, method string, url string, params []byte) (string, string, string) {
 	var nonce = strconv.FormatInt(time.Now().Unix(), 10)
-	var authHeather =  nonce + method + url + string(params)
+	var authHeather = nonce + method + url + string(params)
 	var signedPayload = hmac.New(sha256.New, []byte(apiSecret))
 	signedPayload.Write([]byte(authHeather))
 	var signature = hex.EncodeToString(signedPayload.Sum(nil))
 	return key, nonce, signature
 }
 
-func (b *BitsoPrivate)validateCredentials() (error){
+func (b *BitsoPrivate) validateCredentials() error {
 	if b.ApiKey == "" || b.ApiSecret == "" {
 		return &models.NoCredentials{}
 	}

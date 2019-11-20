@@ -1,6 +1,7 @@
 package bitso
 
 import (
+	"fmt"
 	"github.com/grupokindynos/gobitso/models"
 	"github.com/joho/godotenv"
 	"github.com/stretchr/testify/assert"
@@ -11,14 +12,26 @@ import (
 
 const BitsoUrl = "https://api.bitso.com"
 
-func init(){
+func init() {
+	fmt.Println("Getting vars")
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 }
 
-func TestPrivateApiAccess(t *testing.T){
+func TestAddressGeneration(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	params := models.DestinationParams{
+		FundCurrency: "Bitcoin",
+	}
+	address, err := b.GetAddress(params)
+	assert.Nil(t, err)
+	fmt.Println("address: ", address.Payload)
+}
+
+func TestPrivateApiAccess(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	_, err := b.Balances()
 	assert.IsType(t, &models.NoCredentials{}, err)
@@ -36,15 +49,16 @@ func TestWithdrawals(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 	params := models.WithdrawParams{
-		Currency: 	"litecoin",
-		Amount:   	"0.000",
-		Address:  	"MQvNy1m7UZVfmeyAQEeYLYr9uJDwkAh898",
-		Tag:		"Bitso API Unit Test",
+		Currency: "litecoin",
+		Amount:   "0.000",
+		Address:  "MQvNy1m7UZVfmeyAQEeYLYr9uJDwkAh898",
+		Tag:      "Bitso API Unit Test",
 	}
 	_, err := b.Withdraw(params)
 	assert.Nil(t, err)
 	// fmt.Println("Test Response: ", res)
 }
+
 // Tests Private Api
 func TestBalances(t *testing.T) {
 	b := NewBitso(BitsoUrl)
@@ -52,7 +66,7 @@ func TestBalances(t *testing.T) {
 	res, err := b.Balances()
 	assert.Nil(t, err)
 	assert.IsType(t, res, models.BalancesResponse{})
-	// fmt.Println("TestBalances: ", res.Payload.Balances)
+	fmt.Println("TestBalances: ", res.Payload.Balances)
 }
 
 // Tests Public API
@@ -73,7 +87,5 @@ func TestOrderPlacement(t *testing.T) {
 		TimeIF:     models.GTC,
 		InternalID: "testing-order",
 	})
-	assert.Nil(t,  err)
+	assert.Nil(t, err)
 }
-
-

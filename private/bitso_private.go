@@ -34,7 +34,7 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 	return balancesResp, nil
 }
 
-func (b *BitsoPrivate) GetAddress(params models.DestinationParams) (models.DestinationResponse, error) {
+func (b *BitsoPrivate) FundingDestination(params models.DestinationParams) (models.DestinationResponse, error) {
 	var destinationResp models.DestinationResponse
 	data, err := b.PrivateRequest("/v3/funding_destination", http.MethodGet, nil, params)
 	if err != nil {

@@ -26,7 +26,7 @@ func TestAddressGeneration(t *testing.T) {
 	params := models.DestinationParams{
 		FundCurrency: "btc",
 	}
-	address, err := b.GetAddress(params)
+	address, err := b.FundingDestination(params)
 	assert.Nil(t, err)
 	assert.Equal(t, true, address.Success)
 	assert.Equal(t, "Bitcoin address", address.Payload.AccountIdentifierName)

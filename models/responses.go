@@ -3,7 +3,7 @@ package models
 import "time"
 
 type TradeResponse struct {
-	Success bool `json:"success"`
+	Success bool            `json:"success"`
 	Payload []OrderResponse `json:"payload"`
 }
 
@@ -25,12 +25,12 @@ type BookInfoResponse struct {
 }
 
 type OrderResponse struct {
-	Book      string    `json:"book"`
-	CreatedAt string	`json:"created_at"`
-	Amount    string    `json:"amount"`
-	MakerSide string    `json:"maker_side"`
-	Price     string    `json:"price"`
-	Tid       int       `json:"tid"`
+	Book      string `json:"book"`
+	CreatedAt string `json:"created_at"`
+	Amount    string `json:"amount"`
+	MakerSide string `json:"maker_side"`
+	Price     string `json:"price"`
+	Tid       int    `json:"tid"`
 }
 
 type BalancesResponse struct {
@@ -64,7 +64,7 @@ type WithdrawResponse struct {
 }
 
 type BooksResponse struct {
-	Success bool `json:"success"`
+	Success bool           `json:"success"`
 	Payload []BookResponse `json:"payload"`
 }
 
@@ -79,7 +79,7 @@ type BookResponse struct {
 }
 
 type AccountInfoResponse struct {
-	Success bool `json:"success"`
+	Success bool    `json:"success"`
 	Payload Account `json:"payload"`
 }
 
@@ -106,5 +106,13 @@ type PlacedOrderResponse struct {
 	Success bool `json:"success"`
 	Payload struct {
 		Oid string `json:"oid"`
+	} `json:"payload"`
+}
+
+type DestinationResponse struct {
+	Success bool `json:"success"`
+	Payload struct {
+		AccountIdentifierName string `json:"account_identifier_name"`
+		AccountIdentifier     string `json:"account_identifier"`
 	} `json:"payload"`
 }

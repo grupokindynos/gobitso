@@ -19,3 +19,4 @@ main.go
 
 # Config File
 .env
+.vscode/launch.json

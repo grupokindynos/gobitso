@@ -36,11 +36,10 @@ func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
 
 func (b *BitsoPrivate) GetAddress(params models.DestinationParams) (models.DestinationResponse, error) {
 	var destinationResp models.DestinationResponse
-	data, err := b.PrivateRequest("/v3/funding_destination", http.MethodGet, nil, destinationResp)
+	data, err := b.PrivateRequest("/v3/funding_destination", http.MethodGet, nil, params)
 	if err != nil {
 		return destinationResp, err
 	}
-	fmt.Println("DATA: ", string(data))
 	err = json.Unmarshal(data, &destinationResp)
 	if err != nil {
 		return destinationResp, err
@@ -94,8 +93,12 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		if err != nil {
 			return arr, err
 		}
-		var iQueryParams, _ = json.Marshal(queryParams)
-		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, url, iQueryParams)
+		qParams := val.Encode()
+		bRequestUrl := url
+		if queryParams != nil {
+			bRequestUrl = url + "?" + qParams
+		}
+		key, nonce, signature := getSigningData(b.ApiKey, b.ApiSecret, method, bRequestUrl, nil)
 		var authH = fmt.Sprintf("Bitso %s:%s:%s", key, nonce, signature)
 		req, err := http.NewRequest(method, b.UrlPrivate+url, nil)
 		if err != nil {
@@ -103,7 +106,7 @@ func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, 
 		}
 		// fmt.Print("Encoded Values: ", val.Encode())
 		q := req.URL.RawQuery
-		req.URL.RawQuery = q + val.Encode()
+		req.URL.RawQuery = q + qParams
 
 		// Add Headers
 		req.Header.Add("Authorization", authH)

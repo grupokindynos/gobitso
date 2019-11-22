@@ -24,11 +24,12 @@ func TestAddressGeneration(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 	params := models.DestinationParams{
-		FundCurrency: "Bitcoin",
+		FundCurrency: "btc",
 	}
 	address, err := b.GetAddress(params)
 	assert.Nil(t, err)
-	fmt.Println("address: ", address.Payload)
+	assert.Equal(t, true, address.Success)
+	assert.Equal(t, "Bitcoin address", address.Payload.AccountIdentifierName)
 }
 
 func TestPrivateApiAccess(t *testing.T) {
@@ -39,8 +40,9 @@ func TestPrivateApiAccess(t *testing.T) {
 
 func TestAvailableBooks(t *testing.T) {
 	b := NewBitso(BitsoUrl)
-	_, err := b.AvailableBooks()
+	res, err := b.AvailableBooks()
 	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
 	// fmt.Println(res.Payload)
 }
 
@@ -66,7 +68,7 @@ func TestBalances(t *testing.T) {
 	res, err := b.Balances()
 	assert.Nil(t, err)
 	assert.IsType(t, res, models.BalancesResponse{})
-	fmt.Println("TestBalances: ", res.Payload.Balances)
+	assert.Equal(t, true, res.Success)
 }
 
 // Tests Public API
@@ -74,6 +76,7 @@ func TestTrades(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	res, err := b.Trades("btc_mxn")
 	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
 	assert.Equal(t, 25, len(res.Payload))
 	assert.IsType(t, res, models.TradeResponse{})
 }

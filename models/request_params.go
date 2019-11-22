@@ -8,6 +8,10 @@ type TradesParams struct {
 	Limit  int    `url:"limit"` // max 100
 }
 
+type TickerParams struct {
+	Book string `url:"book"`
+}
+
 type WithdrawParams struct {
 	Currency string `json:"currency"`
 	Amount   string `json:"amount"`

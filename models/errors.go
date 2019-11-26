@@ -1,5 +1,14 @@
 package models
 
+
+type ErrorResponse struct {
+	Success bool `json:"success"`
+	Error   struct {
+		Message string `json:"message"`
+		Code    string `json:"code"`
+	} `json:"error"`
+}
+
 type NoCredentials struct{}
 
 func (nc *NoCredentials) Error() string{

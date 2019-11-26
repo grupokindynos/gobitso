@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/google/go-querystring/query"
 	"github.com/grupokindynos/gobitso/models"
@@ -19,6 +20,21 @@ type BitsoPrivate struct {
 	ApiKey     string
 	ApiSecret  string
 	UrlPrivate string
+}
+
+func (b *BitsoPrivate) AccountStatus() (accountInfo models.AccountInfoResponse, err error) {
+	/*
+		Retrieves Bitso account's status.
+	 */
+	data, err := b.PrivateRequest("/v3/account_status", http.MethodGet, nil, nil)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &accountInfo)
+	if err != nil {
+		return
+	}
+	return accountInfo, err
 }
 
 func (b *BitsoPrivate) Balances() (models.BalancesResponse, error) {
@@ -77,6 +93,75 @@ func (b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawRe
 		return models.WithdrawResponse{}, err
 	}
 	return withdrawInfo, nil
+}
+
+func (b *BitsoPrivate) UserTrades(params models.UserTradesParams) (userTrades models.UserTradesResponse, err error) {
+	data, err := b.PrivateRequest("/v3/user_trades", http.MethodGet, nil, params)
+	fmt.Println("UserTradesData: ", string(data))
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &userTrades)
+	if err != nil {
+		return
+	}
+	return userTrades, err
+}
+
+func (b *BitsoPrivate) OrderTrades(params models.OrderTradesParams) (userTrades models.UserTradesResponse, err error) {
+	data, err := b.PrivateRequest("/v3/order_trades/order_trades/" + params.Oid + "/", http.MethodGet, nil, params)
+	fmt.Println(string(data))
+	var errResponse models.ErrorResponse
+	if err != nil {
+		fmt.Println(err)
+		return userTrades, err
+	}
+	err = json.Unmarshal(data, &userTrades)
+	if err != nil {
+		return userTrades, err
+	}
+	if userTrades.Success == false {
+		err = json.Unmarshal(data, errResponse)
+		if err != nil {
+			return userTrades, errors.New(errResponse.Error.Message)
+		}
+	}
+	return userTrades, err
+}
+
+func (b *BitsoPrivate) OpenOrders() {
+
+}
+
+func (b *BitsoPrivate) LookUpOrders(orders []string) (models.LookUpOrdersResponse, error) {
+	/*
+		Looks for an order status in a user's history
+
+		// TODO Support for client_id
+	 */
+	fmt.Println()
+	var orderStr string
+	if len(orders) == 1 {
+		orderStr = orders[0]
+	} else {
+		for i, order := range orders {
+			if i == 0 {
+				orderStr = order
+			} else {
+				orderStr += "-" + order
+			}
+
+		}
+	}
+
+	fmt.Println("LookUpOrdersUrlOrders: ", orderStr)
+	var orderInfo models.LookUpOrdersResponse
+	data, err := b.PrivateRequest("/v3/orders/" + orders[0] + "/", http.MethodGet, nil, nil)
+	err = json.Unmarshal(data, &orderInfo)
+	if err != nil {
+		return models.LookUpOrdersResponse{}, err
+	}
+	return orderInfo, nil
 }
 
 func (b *BitsoPrivate) PrivateRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {

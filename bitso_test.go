@@ -21,16 +21,25 @@ func init() {
 	}
 }
 
+func TestLookUpOrders(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	oids := []string{
+		"RLgCTC0dVxGW2gKr",
+	}
+	res, err := b.LookUpOrders(oids)
+	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
+	fmt.Println(res)
+}
 func TestOrderTrades(t *testing.T){
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
-	info, _ := b.AccountStatus()
-	clientId := info.Payload.ClientID
+	//info, _ := b.AccountStatus()
+	//clientId := info.Payload.ClientID
 	params := models.OrderTradesParams{
-		ClientId: clientId,
 		Oid: "RLgCTC0dVxGW2gKr",
 	}
-
 	//userTrades, err := b.UserTrades(params)
 	orderTrades, err := b.OrderTrades(params)
 	fmt.Println(err)

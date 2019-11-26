@@ -109,8 +109,8 @@ func (b *BitsoPrivate) UserTrades(params models.UserTradesParams) (userTrades mo
 }
 
 func (b *BitsoPrivate) OrderTrades(params models.OrderTradesParams) (userTrades models.UserTradesResponse, err error) {
-	data, err := b.PrivateRequest("/v3/order_trades/order_trades/" + params.Oid + "/", http.MethodGet, nil, params)
-	fmt.Println(string(data))
+	data, err := b.PrivateRequest("/v3/order_trades/order_trades/" + params.Oid + "/", http.MethodGet, nil, nil)
+	fmt.Println("OrderTrades: ", string(data))
 	var errResponse models.ErrorResponse
 	if err != nil {
 		fmt.Println(err)
@@ -157,10 +157,12 @@ func (b *BitsoPrivate) LookUpOrders(orders []string) (models.LookUpOrdersRespons
 	fmt.Println("LookUpOrdersUrlOrders: ", orderStr)
 	var orderInfo models.LookUpOrdersResponse
 	data, err := b.PrivateRequest("/v3/orders/" + orders[0] + "/", http.MethodGet, nil, nil)
+	fmt.Println(string(data))
 	err = json.Unmarshal(data, &orderInfo)
 	if err != nil {
 		return models.LookUpOrdersResponse{}, err
 	}
+	fmt.Println("Done Request")
 	return orderInfo, nil
 }
 
@@ -240,6 +242,7 @@ func getSigningData(key string, apiSecret string, method string, url string, par
 	var signedPayload = hmac.New(sha256.New, []byte(apiSecret))
 	signedPayload.Write([]byte(authHeather))
 	var signature = hex.EncodeToString(signedPayload.Sum(nil))
+	fmt.Println("Nonce: ", nonce, url)
 	return key, nonce, signature
 }
 

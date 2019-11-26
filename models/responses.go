@@ -124,10 +124,10 @@ type LookUpOrdersResponse struct {
 type LookUpOrderResponse struct{
 	Book           string    `json:"book"`
 	OriginalAmount string    `json:"original_amount"`
-	UnfilledAmount string    `json:"unfilled_amount"`
+	UnfilledAmount float64    `json:"unfilled_amount"`
 	OriginalValue  string    `json:"original_value"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
+	CreatedAt      string 	 `json:"created_at"`
+	UpdatedAt      string 	 `json:"updated_at"`
 	Price          string    `json:"price"`
 	Oid            string    `json:"oid"`
 	Side           string    `json:"side"`

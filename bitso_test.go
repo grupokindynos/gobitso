@@ -21,6 +21,65 @@ func init() {
 	}
 }
 
+func TestOpenOrders(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	res, err := b.OpenOrders(models.UserTradesParams{})
+	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
+	fmt.Println(res)
+}
+
+func TestLookUpOrders(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	oids := []string{
+		"RLgCTC0dVxGW2gKr",
+	}
+	res, err := b.LookUpOrders(oids)
+	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
+	fmt.Println(res)
+}
+
+/*func TestOrderTrades(t *testing.T){
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	//info, _ := b.AccountStatus()
+	//clientId := info.Payload.ClientID
+	params := models.OrderTradesParams{
+		Oid: "RLgCTC0dVxGW2gKr",
+	}
+	//userTrades, err := b.UserTrades(params)
+	orderTrades, err := b.OrderTrades(params)
+	fmt.Println(err)
+	fmt.Println(orderTrades)
+	assert.Nil(t, err)
+	assert.Equal(t, true, orderTrades.Success)
+
+}*/
+
+func TestUserTrades(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	info, _ := b.AccountStatus()
+	clientId := info.Payload.ClientID
+	fmt.Println(clientId)
+	params := models.UserTradesParams{
+		Book: "eth_btc",
+	}
+	userTrades, err := b.UserTrades(params)
+	//fmt.Println("UserTrades: ", userTrades)
+	fmt.Println("OrderTrades: ", userTrades)
+	assert.Nil(t, err)
+	assert.Equal(t, true, userTrades.Success)
+	var orderIds []string
+	for _, order := range userTrades.Payload {
+		orderIds = append(orderIds, order.Oid)
+	}
+	res, _ := b.LookUpOrders(orderIds)
+	fmt.Println(orderIds, res)
+}
 func TestAddressGeneration(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))

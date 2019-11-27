@@ -6,7 +6,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/google/go-querystring/query"
 	"github.com/grupokindynos/gobitso/models"
@@ -108,7 +107,7 @@ func (b *BitsoPrivate) UserTrades(params models.UserTradesParams) (userTrades mo
 	return userTrades, err
 }
 
-func (b *BitsoPrivate) OrderTrades(params models.OrderTradesParams) (userTrades models.UserTradesResponse, err error) {
+/* func (b *BitsoPrivate) OrderTrades(params models.OrderTradesParams) (userTrades models.UserTradesResponse, err error) {
 	data, err := b.PrivateRequest("/v3/order_trades/order_trades/" + params.Oid + "/", http.MethodGet, nil, nil)
 	fmt.Println("OrderTrades: ", string(data))
 	var errResponse models.ErrorResponse
@@ -127,10 +126,19 @@ func (b *BitsoPrivate) OrderTrades(params models.OrderTradesParams) (userTrades 
 		}
 	}
 	return userTrades, err
-}
+}*/
 
-func (b *BitsoPrivate) OpenOrders() {
-
+func (b *BitsoPrivate) OpenOrders(params models.UserTradesParams) (openOrdersResponse models.LookUpOrdersResponse, err error) {
+	data, err := b.PrivateRequest("/v3/open_orders", http.MethodGet, nil, params)
+	fmt.Println("OpenOrdersData: ", string(data))
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &openOrdersResponse)
+	if err != nil {
+		return
+	}
+	return openOrdersResponse, err
 }
 
 func (b *BitsoPrivate) LookUpOrders(orders []string) (models.LookUpOrdersResponse, error) {

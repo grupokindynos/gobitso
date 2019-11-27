@@ -21,6 +21,15 @@ func init() {
 	}
 }
 
+func TestOpenOrders(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	res, err := b.OpenOrders(models.UserTradesParams{})
+	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
+	fmt.Println(res)
+}
+
 func TestLookUpOrders(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
@@ -32,7 +41,8 @@ func TestLookUpOrders(t *testing.T) {
 	assert.Equal(t, true, res.Success)
 	fmt.Println(res)
 }
-func TestOrderTrades(t *testing.T){
+
+/*func TestOrderTrades(t *testing.T){
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
 	//info, _ := b.AccountStatus()
@@ -47,7 +57,8 @@ func TestOrderTrades(t *testing.T){
 	assert.Nil(t, err)
 	assert.Equal(t, true, orderTrades.Success)
 
-}
+}*/
+
 func TestUserTrades(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))

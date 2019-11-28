@@ -36,10 +36,11 @@ const (
 )
 
 type PlaceOrderParams struct {
-	Book       string      `json:"book"`
-	Side       OrderSide   `json:"side"`
-	TimeIF     TimeInForce `json:"time_in_force"`
-	InternalID string      `json:"client_id"`
+	Book       	string      `json:"book"`
+	Side       	OrderSide   `json:"side"`
+	Type		string		`json:"type"`
+	TimeIF     	TimeInForce `json:"time_in_force"`
+	InternalID 	string      `json:"client_id"`
 }
 
 type DestinationParams struct {

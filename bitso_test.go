@@ -112,7 +112,7 @@ func TestAvailableBooks(t *testing.T) {
 	res, err := b.AvailableBooks()
 	assert.Nil(t, err)
 	assert.Equal(t, true, res.Success)
-	// fmt.Println(res.Payload)
+	fmt.Println(res.Payload)
 }
 
 // Test Withdrawal

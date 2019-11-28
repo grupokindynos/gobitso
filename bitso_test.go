@@ -21,6 +21,15 @@ func init() {
 	}
 }
 
+func TestAccount(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	res, err := b.AccountStatus()
+	assert.Nil(t, err)
+	assert.Equal(t, true, res.Success)
+	fmt.Println(res)
+}
+
 func TestOpenOrders(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))

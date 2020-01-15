@@ -89,6 +89,22 @@ func TestUserTrades(t *testing.T) {
 	res, _ := b.LookUpOrders(orderIds)
 	fmt.Println(orderIds, res)
 }
+
+func TestUserFees(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	info, _ := b.AccountStatus()
+	clientId := info.Payload.ClientID
+	fmt.Println(clientId)
+	userFees, err := b.UserFees()
+	assert.Nil(t, err)
+	assert.Equal(t, true, userFees.Success)
+	for _, bookFee := range userFees.Payload.Fees {
+		fmt.Printf("%+v\n", bookFee)
+	}
+
+	fmt.Printf("%+v\n", userFees.Payload.WithdrawalFees)
+}
 func TestAddressGeneration(t *testing.T) {
 	b := NewBitso(BitsoUrl)
 	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
@@ -125,7 +141,7 @@ func TestWithdrawals(t *testing.T) {
 		Address:  "MQvNy1m7UZVfmeyAQEeYLYr9uJDwkAh898",
 		Tag:      "Bitso API Unit Test",
 	}
-	_, err := b.Withdraw(params)
+	_, err := b.CryptoWithdrawal(params)
 	assert.Nil(t, err)
 	// fmt.Println("Test Response: ", res)
 }

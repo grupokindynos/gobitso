@@ -24,7 +24,7 @@ type BitsoPrivate struct {
 func (b *BitsoPrivate) AccountStatus() (accountInfo models.AccountInfoResponse, err error) {
 	/*
 		Retrieves Bitso account's status.
-	 */
+	*/
 	data, err := b.PrivateRequest("/v3/account_status", http.MethodGet, nil, nil)
 	if err != nil {
 		return
@@ -79,7 +79,7 @@ func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.Placed
 	return placedOrderResp, nil
 }
 
-func (b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawResponse, error) {
+func (b *BitsoPrivate) CryptoWithdrawal(params models.WithdrawParams) (models.WithdrawResponse, error) {
 	var withdrawInfo models.WithdrawResponse
 	byteParams, err := json.Marshal(params)
 	if err != nil {
@@ -92,6 +92,19 @@ func (b *BitsoPrivate) Withdraw(params models.WithdrawParams) (models.WithdrawRe
 		return models.WithdrawResponse{}, err
 	}
 	return withdrawInfo, nil
+}
+
+func (b *BitsoPrivate) UserFees() (userFees models.UserFeesResponse, err error) {
+	data, err := b.PrivateRequest("/v3/fees", http.MethodGet, nil, nil)
+	if err != nil {
+		return
+	}
+	err = json.Unmarshal(data, &userFees)
+	if err != nil {
+		return
+	}
+
+	return userFees, nil
 }
 
 func (b *BitsoPrivate) UserTrades(params models.UserTradesParams) (userTrades models.UserTradesResponse, err error) {
@@ -146,7 +159,7 @@ func (b *BitsoPrivate) LookUpOrders(orders []string) (models.LookUpOrdersRespons
 		Looks for an order status in a user's history
 
 		// TODO Support for client_id
-	 */
+	*/
 	fmt.Println()
 	var orderStr string
 	if len(orders) == 1 {
@@ -164,7 +177,7 @@ func (b *BitsoPrivate) LookUpOrders(orders []string) (models.LookUpOrdersRespons
 
 	fmt.Println("LookUpOrdersUrlOrders: ", orderStr)
 	var orderInfo models.LookUpOrdersResponse
-	data, err := b.PrivateRequest("/v3/orders/" + orders[0] + "/", http.MethodGet, nil, nil)
+	data, err := b.PrivateRequest("/v3/orders/"+orders[0]+"/", http.MethodGet, nil, nil)
 	fmt.Println(string(data))
 	err = json.Unmarshal(data, &orderInfo)
 	if err != nil {

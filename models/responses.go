@@ -8,7 +8,7 @@ type TradeResponse struct {
 }
 
 type TickerResponse struct {
-	Success bool `json:"success"`
+	Success bool             `json:"success"`
 	Payload BookInfoResponse `json:"payload"`
 }
 
@@ -118,38 +118,55 @@ type DestinationResponse struct {
 }
 
 type LookUpOrdersResponse struct {
-	Success bool `json:"success"`
+	Success bool                  `json:"success"`
 	Payload []LookUpOrderResponse `json:"payload"`
 }
-type LookUpOrderResponse struct{
-	Book           string    `json:"book"`
-	OriginalAmount string    `json:"original_amount"`
-	UnfilledAmount float64    `json:"unfilled_amount"`
-	OriginalValue  string    `json:"original_value"`
-	CreatedAt      string 	 `json:"created_at"`
-	UpdatedAt      string 	 `json:"updated_at"`
-	Price          string    `json:"price"`
-	Oid            string    `json:"oid"`
-	Side           string    `json:"side"`
-	Status         string    `json:"status"`
-	Type           string    `json:"type"`
+type LookUpOrderResponse struct {
+	Book           string  `json:"book"`
+	OriginalAmount string  `json:"original_amount"`
+	UnfilledAmount float64 `json:"unfilled_amount"`
+	OriginalValue  string  `json:"original_value"`
+	CreatedAt      string  `json:"created_at"`
+	UpdatedAt      string  `json:"updated_at"`
+	Price          string  `json:"price"`
+	Oid            string  `json:"oid"`
+	Side           string  `json:"side"`
+	Status         string  `json:"status"`
+	Type           string  `json:"type"`
 }
-
 
 type UserTradesResponse struct {
-	Success bool `json:"success"`
-	Payload []UserTradeResponse`json:"payload"`
+	Success bool                `json:"success"`
+	Payload []UserTradeResponse `json:"payload"`
 }
 
-type UserTradeResponse struct{
-	Book         string    	`json:"book"`
-	Major        string    	`json:"major"`
-	CreatedAt    string 	`json:"created_at"`
-	Minor        string    	`json:"minor"`
-	FeesAmount   string    	`json:"fees_amount"`
-	FeesCurrency string    	`json:"fees_currency"`
-	Price        string    	`json:"price"`
-	Tid          string		`json:"tid"`
-	Oid          string    	`json:"oid"`
-	Side         string    	`json:"side"`
+type UserTradeResponse struct {
+	Book         string `json:"book"`
+	Major        string `json:"major"`
+	CreatedAt    string `json:"created_at"`
+	Minor        string `json:"minor"`
+	FeesAmount   string `json:"fees_amount"`
+	FeesCurrency string `json:"fees_currency"`
+	Price        string `json:"price"`
+	Tid          string `json:"tid"`
+	Oid          string `json:"oid"`
+	Side         string `json:"side"`
+}
+
+type BookFees struct {
+	Book            string `json:"book"`
+	TakerFeeDecimal string `json:"taker_fee_decimal"`
+	TakerFeePercent string `json:"taker_fee_percent"`
+	MakerFeeDecimal string `json:"maker_fee_decimal"`
+	MakerFeePercent string `json:"maker_fee_percent"`
+}
+
+type UserFeeResponse struct {
+	Fees           []BookFees        `json:"fees"`
+	WithdrawalFees map[string]string `json:"withdrawal_fees"`
+}
+
+type UserFeesResponse struct {
+	Success bool            `json:"success"`
+	Payload UserFeeResponse `json:"payload"`
 }

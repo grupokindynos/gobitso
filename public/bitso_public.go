@@ -10,7 +10,7 @@ import (
 )
 
 type BitsoPublic struct {
-	Url			string
+	Url string
 }
 
 // Methods
@@ -27,7 +27,7 @@ func (b *BitsoPublic) Trades(params models.TradesParams) (models.TradeResponse, 
 	return tradeResp, nil
 }
 
-func (b *BitsoPublic) AvailableBooks() (models.BooksResponse, error){
+func (b *BitsoPublic) AvailableBooks() (models.BooksResponse, error) {
 	var availableBooksResp models.BooksResponse
 	data, err := b.PublicRequest("/v3/available_books", http.MethodGet, nil, nil)
 	if err != nil {
@@ -47,12 +47,12 @@ func (b *BitsoPublic) Ticker(params models.TickerParams) (models.TickerResponse,
 	return tickerResp, nil
 }
 
-func (b *BitsoPublic)PublicRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
+func (b *BitsoPublic) PublicRequest(url string, method string, params []byte, queryParams interface{}) ([]byte, error) {
 	var arr []byte
 	client := &http.Client{}
 
 	if method == http.MethodGet {
-		req, err := http.NewRequest(method, b.Url + url, nil)
+		req, err := http.NewRequest(method, b.Url+url, nil)
 		if err != nil {
 			return arr, err
 		}
@@ -77,7 +77,7 @@ func (b *BitsoPublic)PublicRequest(url string, method string, params []byte, que
 		}
 		return data, nil
 	} else {
-		req, err := http.NewRequest(method, b.Url + url, bytes.NewBuffer(params))
+		req, err := http.NewRequest(method, b.Url+url, bytes.NewBuffer(params))
 		if err != nil {
 			return arr, err
 		}

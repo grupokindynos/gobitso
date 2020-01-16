@@ -170,3 +170,29 @@ type UserFeesResponse struct {
 	Success bool            `json:"success"`
 	Payload UserFeeResponse `json:"payload"`
 }
+
+type FundingResponse struct {
+	Success bool `json:"success"`
+	Payload []struct {
+		Fid       string    `json:"fid"`
+		Status    string    `json:"status"`
+		CreatedAt string 	`json:"created_at"`
+		Currency  string    `json:"currency"`
+		Method    string    `json:"method"`
+		Amount    string    `json:"amount"`
+		Details   FundingDetails `json:"details"`
+	} `json:"payload"`
+}
+
+type FundingDetails struct {
+	SenderName       string `json:"sender_name"`
+	SenderBank       string `json:"sender_bank"`
+	SenderClabe      string `json:"sender_clabe"`
+	ReceiveClabe     string `json:"receive_clabe"`
+	NumericReference string `json:"numeric_reference"`
+	Concepto         string `json:"concepto"`
+	ClaveRastreo     string `json:"clave_rastreo"`
+	BeneficiaryName  string `json:"beneficiary_name"`
+	FundingAddress string `json:"funding_address"`
+	TxHash         string `json:"tx_hash"`
+}

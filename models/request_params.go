@@ -58,3 +58,10 @@ type OrderTradesParams struct {
 	Oid   		string 	`url:"oid"` // REQUIRED
 	ClientId 	string 	`url:"client_id"` // REQUIRED
 }
+
+type FundingParams struct {
+	Status   	string `url:"status"` // pending, in_progress, complete, failed
+	Marker 		string `url:"marker"`
+	Method   	string `url:"method"`
+	Limit  		int    `url:"limit"` // max 100
+}

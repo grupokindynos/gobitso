@@ -189,3 +189,16 @@ func TestTicker(t *testing.T) {
 	})
 	assert.Nil(t, err)
 }
+
+func TestFundings(t *testing.T) {
+	b := NewBitso(BitsoUrl)
+	b.SetAuth(os.Getenv("BITSO_API_KEY"), os.Getenv("BITSO_API_SECRET"))
+	res, err := b.Fundings(models.FundingParams{
+		Method:"btc",
+	})
+	assert.Nil(t, err)
+	fmt.Println(res)
+	for _, funding := range res.Payload {
+		fmt.Println(funding.Amount, " ", funding.Details.TxHash, " at ", funding.Details.FundingAddress)
+	}
+}

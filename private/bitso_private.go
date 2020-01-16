@@ -62,6 +62,18 @@ func (b *BitsoPrivate) FundingDestination(params models.DestinationParams) (mode
 	return destinationResp, nil
 }
 
+func (b *BitsoPrivate) Fundings(params models.FundingParams) (fundingResp models.FundingResponse, err error) {
+	data, err := b.PrivateRequest("/v3/fundings", http.MethodGet, nil, params)
+	if err != nil {
+		return fundingResp, err
+	}
+	err = json.Unmarshal(data, &fundingResp)
+	if err != nil {
+		return fundingResp, err
+	}
+	return fundingResp, nil
+}
+
 func (b *BitsoPrivate) PlaceOrder(params models.PlaceOrderParams) (models.PlacedOrderResponse, error) {
 	var placedOrderResp models.PlacedOrderResponse
 	byteParams, err := json.Marshal(params)
